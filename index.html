@@ -148,6 +148,7 @@
     <div id="bgm-container">
         <button class="bgm-btn" id="play-pause-btn" onclick="toggleBGM()">🔇</button>
         <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume(this.value)">
+        <button class="bgm-btn" onclick="downloadBGM()" title="BGM 다운로드">📥</button>
     </div>
 
     <div id="intro-overlay">
@@ -386,6 +387,32 @@
         }
 
         function changeVolume(val) { audio.volume = val; }
+
+        // BGM 다운로드 기능 추가
+        function downloadBGM() {
+            const bgmUrl = 'https://raw.githubusercontent.com/deokc/dong/main/%EC%B2%AD%ED%95%B4(%E9%9D%91%E6%B5%B7)_11.mp3';
+            
+            fetch(bgmUrl)
+                .then(res => {
+                    if (!res.ok) throw new Error('파일을 불러올 수 없습니다.');
+                    return res.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "청해(靑海).mp3"; 
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(url);
+                        a.remove();
+                    }, 100);
+                })
+                .catch(() => {
+                    alert('다운로드 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                });
+        }
 
         function openModal(key) {
             currentChatKey = key;
